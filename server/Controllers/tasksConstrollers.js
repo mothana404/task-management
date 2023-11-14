@@ -5,14 +5,19 @@ const task = require('../Models/tasks');
 async function addtask(req, res){
     try{
         const id = req.user.id;
-        console.log(req.user);
-        const { task_name, task_body, Date, task_status, task_priority} = req.body;
+        console.log(req.user.id);
+    //     title,
+    //   description,
+    //   dueDate,
+    //   priority,
+    //   completed: false,
+        const { title, description, dueDate, priority, completed } = req.body;
         const newtask = new task();
-        newtask.task_name = task_name;
-        newtask.task_body = task_body;
-        newtask.Date = Date;
-        newtask.task_priority = task_priority;
-        newtask.task_status = task_status;
+        newtask.task_name = title;
+        newtask.task_body = description;
+        newtask.Date = dueDate;
+        newtask.task_priority = priority;
+        newtask.task_status = completed;
         newtask.user_id = id;
         await newtask.save();
         res.status(201).json("added successfully");
@@ -24,12 +29,13 @@ async function addtask(req, res){
 async function updatetask(req, res){
     try{
         const id = req.params.id;
-        const { task_name, task_body, Date, task_status, task_priority} = req.body;
+        const {task_body} = req.body;
+        console.log(11111111111111111);
         const updatedtask = await task.findByIdAndUpdate(id, 
-            {task_name, task_body, Date, task_status, task_priority},
+            {task_body},
             {new : true}
         );
-        // await updatedtask.save();
+        await updatedtask.save();
         res.status(201).json("updated successfully");
     }catch(error){
         console.log("error in update task controller");
@@ -49,6 +55,7 @@ async function deletetask(req, res){
 
 async function gettask(req, res){
     try{
+        
         const id = req.user.id;
         console.log(id);
         const all = await task.find({user_id : id});

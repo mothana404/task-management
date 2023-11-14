@@ -22,4 +22,4 @@ app.use(tasRroutes);
 app.use(userRoutes);
 
 
-app.listen(port, console.log(`app running in ${port}`));
+app.listen(8000, console.log(`app running in 8000`));

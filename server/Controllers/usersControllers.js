@@ -8,9 +8,9 @@ const user = require('../Models/users');
 require('dotenv').config();
 
 const schema = Joi.object({
-    user_name : Joi.string().alphanum().min(3).max(10).required(),
+    user_name : Joi.string().min(3).max(10).required(),
     user_email : Joi.string().email().required(),
-    user_password : Joi.string().required(),
+    user_password : Joi.required(),
 });
 
 function validation(user_name, user_email, user_password){
@@ -28,7 +28,7 @@ async function createUser (req, res){
     const valid = validation(user_name, user_email, user_password);
     console.log(valid);
     console.log(user_name, user_email, user_password);
-    if (valid){
+    // if (valid){
         let new_password = await bcrypt.hash(user_password, 10);
         const newuser = new user();
         newuser.user_name = user_name;
@@ -38,15 +38,15 @@ async function createUser (req, res){
         const id = await user.findOne({
             user_email : user_email
         });
-        console.log(id.id);
+        console.log(process.env.SECRET_KEY);
         const accessToken = jwt.sign({ id : id.id }, process.env.SECRET_KEY, {expiresIn: '4h'});
-        res.cookie('accessToken', accessToken, { httpOnly: true });
+        // res.cookie('accessToken', accessToken, { httpOnly: true });
         res.status(201).json(accessToken);
-    }else {
-        res.status(400).json("Invalid input");
-    }
+    // }else {
+    //     res.status(400).json("Invalid input");
+    // }
   } catch (error) {
-        res.status(500).json({ error: 'Error in user model createUser' });
+        res.status(500).json("error here");
   }
 };
 
